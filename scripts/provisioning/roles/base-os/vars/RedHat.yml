@@ -18,6 +18,14 @@
 #
 
 ---
+basic_tools_pkgs_centos7:
+  - pdsh
+  - avahi # for CentOS8 this is available via third-party repository, to be white-listed
+  - avahi-tools
+
+basic_tools_pkgs_centos8:
+  - yum-utils # for yumdownloader
+
 basic_tools_pkgs:
   - ansible  # for local mode, helpful on Windouz hosts
   - dstat
@@ -27,7 +35,6 @@ basic_tools_pkgs:
   - iotop
   - nc
   - nmap
-  - pdsh
   - rsync
   - sysstat
   - telnet
@@ -36,8 +43,6 @@ basic_tools_pkgs:
   - vim
   - wget
   # machine autodicovery by hostname
-  - avahi
-  - avahi-tools
   - bind-utils
   - nss-mdns
   # remote syslog

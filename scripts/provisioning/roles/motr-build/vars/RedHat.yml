@@ -18,6 +18,15 @@
 #
 
 ---
+motr_build_deps_pkgs_centos8:
+  - kernel-abi-whitelists
+
+motr_build_deps_pkgs_centos7:
+  - gccxml
+  - PyYAML                # required only for tests (m0hagen)
+  - python-ply
+  - python-devel
+
 motr_build_deps_pkgs:
   - asciidoc
   - autoconf
@@ -27,7 +36,6 @@ motr_build_deps_pkgs:
   - createrepo            # for lustre-client-devel rpm
   - gcc
   - gcc-c++
-  - gccxml
   - glibc-headers
   - kernel-devel
   - libaio
@@ -44,9 +52,6 @@ motr_build_deps_pkgs:
   - perl-List-MoreUtils
   - perl-XML-LibXML
   - perl-autodie
-  - python-ply
-  - python-devel
-  - PyYAML                # required only for tests (m0hagen)
   - rpm-build
   - systemd-devel
 

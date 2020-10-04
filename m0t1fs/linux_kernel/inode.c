@@ -18,6 +18,10 @@
  *
  */
 
+#include <linux/version.h>      /* LINUX_VERSION_CODE */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,18,0)
+#include <linux/cred.h>
+#endif
 
 #include <linux/slab.h>         /* kmem_cache */
 

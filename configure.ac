@@ -108,6 +108,8 @@ AC_SUBST([BUILD_HOST])
 AC_SUBST([BUILD_USER],["$(whoami)"])
 AC_SUBST([BUILD_TIME],["$(date -u)"])
 AC_SUBST([BUILD_GCC],["$(gcc -v 2>&1 | grep '^gcc version' | sed -e 's/(GCC)//')"])
+AC_SUBST([BUILD_GCC_NUM],[$(echo $BUILD_GCC | \
+                            sed -r "s/^gcc version ([[0-9]]*\.[[0-9]]*\.[[0-9]]*).*/\1/g")])
 
 #
 # Checking for OS support ------------------------------------------------- {{{1
@@ -203,6 +205,10 @@ AC_ARG_ENABLE([debug],
 )
 AM_CONDITIONAL([ENABLE_DEBUG],
                [test "x$enable_debug" = xyes])
+
+# check if distro is CentOS8 onwards, which supports Python3 only
+AM_CONDITIONAL([ENABLE_PYTHON3],
+               [test "x$(grep -Po 'release \K\d' /etc/redhat-release)" = x8])
 
 # profiler {{{3
 AC_ARG_ENABLE([profiler],
@@ -911,6 +917,13 @@ M0_CFLAGS="-pipe -Wall -Werror -Wno-attributes -fno-strict-aliasing $M0_CFLAGS"
 # Scientific is using.
 M0_CFLAGS="-fno-common $M0_CFLAGS"
 
+AS_IF([test "x$BUILD_GCC_NUM" == x8.3.1],
+      [M0_SUPPRESSED_GCC_WARNINGS="-Wno-stringop-truncation -Wno-stringop-overflow -Wno-maybe-uninitialized -Wno-unused-const-variable -Wno-format-overflow"],
+      [M0_SUPPRESSED_GCC_WARNINGS=""])
+
+M0_CFLAGS="$M0_SUPPRESSED_GCC_WARNINGS $M0_CFLAGS"
+M0_KCFLAGS="$M0_SUPPRESSED_GCC_WARNINGS $M0_KCFLAGS"
+
 M0_LDFLAGS="-rdynamic $M0_LDFLAGS"
 
 M0_KCPPFLAGS="-DM0_INTERNAL='' -DM0_EXTERN=extern \
@@ -934,6 +947,7 @@ AC_SUBST([M0_CFLAGS])
 AC_SUBST([M0_KCPPFLAGS])
 AC_SUBST([M0_KCFLAGS])
 AC_SUBST([M0_LDFLAGS])
+AC_SUBST([M0_SUPPRESSED_GCC_WARNINGS])
 
 AC_SUBST([BUILD_CONFIGURE_OPTS],["$ac_configure_args"])
 AC_SUBST([BUILD_CFLAGS],["$M0_CPPFLAGS $M0_CFLAGS $CPPFLAGS $CFLAGS"])

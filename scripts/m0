@@ -38,6 +38,8 @@ RUNDIR=${RUNDIR:-/var/motr/$(id -un)}
 PROG="${0##*/}"
 M0_SRC_DIR="$(readlink -f $0)"
 M0_SRC_DIR="${M0_SRC_DIR%/*/*}"
+DISTRO_MAJOR_VER=$(grep -Po 'release \K\d' /etc/redhat-release)
+DISTRO_MINOR_VER=$(grep -Po 'release \d\.\K\d' /etc/redhat-release)
 
 SUDO="${SUDO-sudo -E}"  # the absence of ':' is important
 
@@ -94,6 +96,9 @@ rundir_init() {
 
 cmd_configure() {
     cd "$M0_SRC_DIR"
+    if test "x$DISTRO_MAJOR_VER" = x8; then
+        CONFIGURE_OPTS="${CONFIGURE_OPTS:-} --enable-castxml"
+    fi
     autoreconf -ifs
     ./configure ${CONFIGURE_OPTS:-}
 }
@@ -144,7 +149,7 @@ cmd_run_st() {
     fi
     for pattern in ${@:-[0-9][0-9]*}; do
         find "$M0_SRC_DIR/scripts/st.d/" -maxdepth 1 \! -type d -name $pattern \
-            -perm +a=x -print | sort |
+            -executable -print | sort |
             while read f; do
                 if [ $list_p -eq 1 ]; then
                     echo ${f##*/}

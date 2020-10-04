@@ -18,10 +18,15 @@
 #
 
 ---
+motr_runtime_deps_pkgs_centos_8:
+
+motr_runtime_deps_pkgs_centos_7:
+  - genders
+  - sysvinit-tools
+
 motr_runtime_deps_pkgs:
   - attr
   - facter
-  - genders
   - libaio
   - libyaml
   - lustre-client
@@ -37,4 +42,3 @@ motr_runtime_deps_pkgs:
   - pkgconfig
   - ruby
   - rubygem-net-ssh
-  - sysvinit-tools

@@ -26,6 +26,18 @@
   with_first_found: '{{ ansible_os_family }}.yml'
   tags: lustre
 
+- name: install Motr build-time dependencies (CentOS8)
+  package:
+    state: present
+    name: '{{ motr_build_deps_pkgs_centos8 }}'
+  when: ansible_distribution_version is version('8', '>=')
+
+- name: install Motr build-time dependencies (CentOS7)
+  package:
+    state: present
+    name: '{{ motr_build_deps_pkgs_centos7 }}'
+  when: ansible_distribution_version is version('7', '==')
+
 - name: install Motr build-time dependencies
   package:
     state: present

@@ -219,7 +219,12 @@ install_files()
     dir='/usr/bin'
     cd $M0_SRC_DIR/utils/spiel
     mkdir -p ${m0spiel_pkg_file%/*}
-    python2 setup.py install --record $m0spiel_pkg_file
+    if ($distro_major_ver >= 8); then
+        python3 setup.py install --record $m0spiel_pkg_file
+    else
+        python2 setup.py install --record $m0spiel_pkg_file
+    fi
+
     cd -
     for m0spiel_file in 'utils/spiel/m0_filesystem_stats' \
                         'utils/spiel/m0spiel' ;
@@ -316,6 +321,9 @@ create_motr_group()
 set -e
 
 parse_cli_options $@
+
+distro_major_ver=$(grep -Po 'release \K\d' /etc/redhat-release)
+distro_minor_ver=$(grep -Po 'release \d\.\K\d' /etc/redhat-release)
 
 if ! $dry_run && [[ $UID -ne 0 ]]; then
     die 'Error: Please, run this script with "root" privileges or use' \

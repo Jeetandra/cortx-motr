@@ -40,7 +40,7 @@
     name:        lustre-whamcloud-{{ item.version }}
     file:        lustre-whamcloud
     description: Whamcloud - Lustre {{ item.version }}
-    baseurl:     https://downloads.whamcloud.com/public/lustre/lustre-{{ item.version }}/el7/client/
+    baseurl:     https://downloads.whamcloud.com/public/lustre/lustre-{{ item.version }}/el$releasever/client/
     enabled:     '{{ item.enabled }}'
     # disable signature verification
     gpgcheck: no
@@ -69,7 +69,7 @@
     path:   /etc/modprobe.d/lnet.conf
     create: yes
     # we want eth1 interface to be used by default by Motr, so specify it first
-    line:   'options lnet networks=tcp(eth1),tcp1(eth0) config_on_load=1'
+    line:   'options lnet networks=tcp({{ ansible_default_ipv4.interface }}),tcp1({{ ansible_default_ipv4.interface }}) config_on_load=1'
   tags: lustre
 
 - name: fix empty /etc/lnet.conf

@@ -63,6 +63,14 @@
     - halon
     - get-stack
 
+- name: install Halon build-time dependencies (CentOS7)
+  package:
+    state: presetm
+    name: '{{ halon_build_deps_pkgs_centos7 }}'
+  tags:
+    - halon
+  when: ansible_distribution_version is version('7', '==')
+
 - name: install Halon build-time dependencies
   package:
     state: present
@@ -71,6 +79,17 @@
     - halon
 
 # RabbitMQ is needed for some of the Halon tests
+
+- name: Add RabbitMQ repository (not part of CentOS8 official distribution)
+  yum_repository:
+    name: bintray-rabbitmq-server
+    description: RabbitMQ YUM repo
+    baseurl: https://dl.bintray.com/rabbitmq/rpm/rabbitmq-server/v3.8.x/el/$releasever/
+  when: ansible_distribution_version is version('8', '>=')
+  tags:
+    - halon
+    - rabbitmq
+
 - name: install RabbitMQ
   package: state=present name=rabbitmq-server
   tags:

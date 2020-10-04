@@ -73,7 +73,7 @@
         name:        '{{ redhat_vault_repo.stdout }}-{{ item }}'
         description: CentOS-{{version}} - {{ item | capitalize }}
         baseurl:     http://vault.centos.org/{{version}}/{{repo_name}}/$basearch/
-        gpgkey:      file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+        gpgkey:      file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-{{version}}
         gpgcheck:    yes
       with_items:
         - base
@@ -85,6 +85,20 @@
   package: name=epel-release  state=present
   when:    ansible_os_family == 'RedHat'
   tags: epel
+
+- name: configure 'Power Tools' repository (required for CentOS8)
+  package: name=dnf-plugins-core state=present
+  tags: powertools, centos8
+  when: ansible_distribution_version is version('8', '>=')
+
+- name: enable 'Power Tools' repository
+  ini_file:
+    dest: /etc/yum.repos.d/CentOS-PowerTools.repo
+    section: PowerTools
+    option: enabled
+    value: '1'
+  when: ansible_distribution_version is version('8', '>=')
+  tags: powertools, centos8
 
 - name: configure 'Debuginfo' repository
   yum_repository:
@@ -145,6 +159,18 @@
   package:
     state: present
     name:  '{{ basic_tools_pkgs }}'
+
+- name: install basic tools for CentOS 7.x and earlier
+  package:
+    state: present
+    name:  '{{ basic_tools_pkgs_centos7 }}'
+  when: ansible_distribution_major_version is version('7', '<=')
+
+- name: install basic tools for CentOS 8.x
+  package:
+    state: present
+    name:  '{{ basic_tools_pkgs_centos8 }}'
+  when: ansible_distribution_major_version is version('8', '==')
 
 - name: install development tools
   package:

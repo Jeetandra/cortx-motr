@@ -18,12 +18,14 @@
 #
 
 ---
+halon_build_deps_pkgs_centos7:
+  - libgenders-devel
+
 halon_build_deps_pkgs:
   - binutils-devel
   - git
   - gmp-devel
   - leveldb-devel
-  - libgenders-devel
   - libyaml-devel
   - ncurses-devel
   - pcre-devel

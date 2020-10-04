@@ -20,6 +20,9 @@
 
 
 #include <linux/version.h> /* LINUX_VERSION_CODE */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,18,0)
+#include <linux/cred.h>
+#endif
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,10,0)
 #include <linux/uidgid.h>  /* from_kuid */
 #endif
